@@ -22,7 +22,5 @@
         "psr-4": {
             "Appzcoder\\Routing\\": "src/"
         }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true    
+    }
 }
