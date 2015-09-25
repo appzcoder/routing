@@ -8,6 +8,7 @@ URL Request Router
     ```
     composer require appzcoder/routing:"dev-master"
     ```
+    
 2. Add bellow lines to your script
 	```php
 	require 'vendor/autoload.php';
