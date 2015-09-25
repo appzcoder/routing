@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "appzcoder/alias-maker": "dev-master"
+        "appzcoder/alias-maker": "@dev"
     },
     "autoload": {
         "psr-4": {
