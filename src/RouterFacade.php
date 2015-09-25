@@ -2,7 +2,7 @@
 
 namespace Appzcoder\Routing;
 
-use Appzcoder\Facade;
+use Appzcoder\AliasMaker\Facade;
 
 class RouterFacade extends Facade
 {
