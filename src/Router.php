@@ -18,6 +18,20 @@ class Router
     protected $controllerNamespace = "App\\Controllers\\";
 
     /**
+     * Group Route Prefix.
+     *
+     * @var string
+     */
+    protected $groupPrefix;
+
+    /**
+     * Group Route Namespace.
+     *
+     * @var string
+     */
+    protected $groupNamespace;
+
+    /**
      * Assign all registered routes.
      *
      * @var array
@@ -199,6 +213,24 @@ class Router
     }
 
     /**
+     * Register a new route for all http verbs.
+     *
+     * @param  string $route
+     * @param  string $callback
+     * @return boolean
+     */
+    public function group($attributes, $callback)
+    {
+        $this->groupPrefix = isset($attributes['prefix']) ? $attributes['prefix'] : null;
+        $this->groupNamespace = isset($attributes['namespace']) ? $attributes['namespace'] : null;
+
+        $callback();
+
+        $this->groupPrefix = null;
+        $this->groupNamespace = null;
+    }
+
+    /**
      * Add a route to the route collection array.
      *
      * @param  string $route
@@ -211,11 +243,14 @@ class Router
         if (is_string($verbs)) {
             $verbs = (array) $verbs;
         }
-
+        if (isset($this->groupPrefix)) {
+            $route = '/' . $this->groupPrefix . $route;
+        }
         $this->routesList[$route] = array(
             'route' => $route,
             'callback' => $callback,
             'verbs' => $verbs,
+            'namespace' => $this->groupNamespace,
         );
     }
 
@@ -245,7 +280,13 @@ class Router
             $strArray = explode('#', $route['callback']);
             $controllerName = $strArray[0];
             $methodName = $strArray[1];
-            $className = $this->controllerNamespace . $controllerName;
+
+            if (isset($route['namespace'])) {
+                $className = $this->controllerNamespace . $route['namespace'] . '\\' . $controllerName;
+            } else {
+                $className = $this->controllerNamespace . $controllerName;
+            }
+
             $controller = new $className();
 
             $data = $this->dispatcher->getParams();
