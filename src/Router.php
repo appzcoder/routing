@@ -213,9 +213,9 @@ class Router
     }
 
     /**
-     * Register a new route for all http verbs.
+     * Register a group of routes.
      *
-     * @param  string $route
+     * @param  string $attributes
      * @param  string $callback
      * @return boolean
      */
