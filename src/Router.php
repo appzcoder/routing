@@ -161,7 +161,7 @@ class Router
      */
     public function any($route, $callback)
     {
-        $verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'];
+        $verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
         return $this->addRoute($route, $callback, $verbs);
     }
 
@@ -178,12 +178,29 @@ class Router
 
         foreach ($classMethods as $methodName) {
             if (!preg_match("/__/", $methodName)) {
-                if (preg_match("/post/", $methodName)) {
+                $tmpMethodName = preg_replace('/((?<=[a-z])(?=[A-Z])|(?=[A-Z][a-z]))/', '-', $methodName);
+
+                if (preg_match("/post-/", $tmpMethodName)) {
                     $verbs = 'POST';
-                    $route = $routeName . '/' . strtolower(str_replace('post', '', $methodName));
+                    $route = $routeName . '/' . strtolower(str_replace('post-', '', $tmpMethodName));
+                } elseif (preg_match("/put-/", $tmpMethodName)) {
+                    $verbs = 'PUT';
+                    $route = $routeName . '/' . strtolower(str_replace('put-', '', $tmpMethodName));
+                } elseif (preg_match("/patch-/", $tmpMethodName)) {
+                    $verbs = 'PATCH';
+                    $route = $routeName . '/' . strtolower(str_replace('patch-', '', $tmpMethodName));
+                } elseif (preg_match("/delete-/", $tmpMethodName)) {
+                    $verbs = 'DELETE';
+                    $route = $routeName . '/' . strtolower(str_replace('delete-', '', $tmpMethodName));
+                } elseif (preg_match("/options-/", $tmpMethodName)) {
+                    $verbs = 'OPTIONS';
+                    $route = $routeName . '/' . strtolower(str_replace('options-', '', $tmpMethodName));
+                } elseif (preg_match("/any-/", $tmpMethodName)) {
+                    $verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+                    $route = $routeName . '/' . strtolower(str_replace('any-', '', $tmpMethodName));
                 } else {
-                    $verbs = 'GET';
-                    $route = $routeName . '/' . strtolower(str_replace('get', '', $methodName));
+                    $verbs = ['GET', 'HEAD'];
+                    $route = $routeName . '/' . strtolower(str_replace('get-', '', $tmpMethodName));
                 }
 
                 $callback = $controllerName . '#' . $methodName;
